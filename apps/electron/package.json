@@ -24,7 +24,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "knip": "cd ../.. && knip --workspace apps/electron",
-    "postinstall": "electron-rebuild",
+    "postinstall": "electron-rebuild || node ../../tools/fetch-electron-prebuilds.mjs",
     "rebuild": "electron-rebuild",
     "rebuild:x64": "cross-env npm_config_target_arch=x64 npm_config_arch=x64 electron-rebuild --arch=x64",
     "rebuild:arm64": "cross-env npm_config_target_arch=arm64 npm_config_arch=arm64 electron-rebuild --arch=arm64",
