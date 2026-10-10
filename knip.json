@@ -1,5 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
     ".": {
       "entry": [
@@ -55,12 +55,7 @@
         "style-loader",
         "ts-loader",
         "ts-node"
-      ],
-      "ignoreExportsUsedInFile": {
-        "src/frontend/components/**/*.tsx": ["default"],
-        "src/main/**/*.ts": ["default"],
-        "src/lib/**/*.ts": ["default"]
-      }
+      ]
     },
     "packages/shared": {
       "entry": [
@@ -75,10 +70,7 @@
         "**/node_modules/**",
         "**/*.test.ts",
         "**/*.spec.ts"
-      ],
-      "ignoreExportsUsedInFile": {
-        "src/**/*.ts": ["default"]
-      }
+      ]
     },
     "packages/ui": {
       "entry": [
@@ -95,11 +87,6 @@
         "**/*.spec.{ts,tsx}",
         "**/*.stories.{ts,tsx}"
       ],
-      "ignoreExportsUsedInFile": {
-        "src/components/*.tsx": ["default"],
-        "src/hooks/*.ts": ["default"],
-        "src/lib/*.ts": ["default"]
-      },
       "ignoreDependencies": []
     },
     "apps/cli": {
@@ -116,10 +103,7 @@
         "**/node_modules/**",
         "**/*.test.ts",
         "**/*.spec.ts"
-      ],
-      "ignoreExportsUsedInFile": {
-        "src/**/*.ts": ["default"]
-      }
+      ]
     },
     "packages/remote-api-types": {
       "entry": [
@@ -134,10 +118,7 @@
         "**/node_modules/**",
         "**/*.test.ts",
         "**/*.spec.ts"
-      ],
-      "ignoreExportsUsedInFile": {
-        "src/**/*.ts": ["default"]
-      }
+      ]
     },
     "packages/tailwind-config": {
       "entry": [
@@ -173,6 +154,7 @@
     "**/tmp/**",
     "**/temp/**"
   ],
+  "ignoreExportsUsedInFile": true,
   "ignoreDependencies": [],
   "ignoreWorkspaces": [],
   "rules": {
@@ -184,7 +166,6 @@
     "unresolved": "error",
     "exports": "error",
     "nsExports": "error",
-    "classMembers": "error",
     "types": "error",
     "nsTypes": "error",
     "enumMembers": "error",
