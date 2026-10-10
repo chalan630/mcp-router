@@ -1,5 +1,12 @@
 import { SERVICE_RETIRED } from "@mcp_router/shared";
-import { app, BrowserWindow, session, shell, nativeTheme } from "electron";
+import {
+  app,
+  BrowserWindow,
+  session,
+  shell,
+  nativeTheme,
+  powerMonitor,
+} from "electron";
 import path from "node:path";
 import { MCPServerManager } from "@/main/modules/mcp-server-manager/mcp-server-manager";
 import { AggregatorServer } from "@/main/modules/mcp-server-runtime/aggregator-server";
@@ -293,6 +300,12 @@ async function initMCPServices(): Promise<void> {
 
   // スキルのシンボリックリンクを検証・修復
   getSkillService().verifyAndRepairSymlinks();
+
+  // スリープ復帰後は OS 側で子プロセスのパイプやソケットが切断されていることがあるため、
+  // 実行中の MCP サーバーを一度切断して張り直す
+  powerMonitor.on("resume", () => {
+    void serverManager.reconnectRunningServers("system resume");
+  });
 }
 
 /**

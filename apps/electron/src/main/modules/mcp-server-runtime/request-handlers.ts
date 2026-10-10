@@ -26,6 +26,7 @@ import {
 export class RequestHandlers extends RequestHandlerBase {
   private originalProtocols: Map<string, string> = new Map();
   private toolNameToServerMap: Map<string, Map<string, string>> = new Map();
+  private serverManager: MCPServerManager;
   private serverStatusMap: Map<string, boolean>;
   private servers: Map<string, MCPServer>;
   private clients: Map<string, Client>;
@@ -40,6 +41,8 @@ export class RequestHandlers extends RequestHandlerBase {
     const maps = serverManager.getMaps();
     const tokenValidator = new TokenValidator(maps.serverNameToIdMap);
     super(tokenValidator);
+
+    this.serverManager = serverManager;
 
     // Get maps from server manager
     this.servers = maps.servers;
@@ -56,6 +59,39 @@ export class RequestHandlers extends RequestHandlerBase {
       serverStatusMap: this.serverStatusMap,
       toolCatalogService: this.toolCatalogService,
     });
+  }
+
+  /**
+   * Resolve the client for a server, probing the connection first so that a
+   * connection broken by sleep/resume is re-established instead of reused.
+   */
+  private async resolveConnectedClient(
+    serverId: string,
+    serverName: string,
+  ): Promise<Client> {
+    if (!this.clients.get(serverId)) {
+      throw new McpError(
+        ErrorCode.InvalidRequest,
+        `Server ${serverName} is not connected`,
+      );
+    }
+
+    if (!this.serverStatusMap.get(serverName)) {
+      throw new McpError(
+        ErrorCode.InvalidRequest,
+        `Server ${serverName} is not running`,
+      );
+    }
+
+    const client = await this.serverManager.ensureClientAlive(serverId);
+    if (!client) {
+      throw new McpError(
+        ErrorCode.InvalidRequest,
+        `Server ${serverName} is not connected`,
+      );
+    }
+
+    return client;
   }
 
   private normalizeProjectId(projectId: unknown): string | null {
@@ -365,20 +401,7 @@ export class RequestHandlers extends RequestHandlerBase {
       );
     }
 
-    const client = this.clients.get(serverId);
-    if (!client) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        `Server ${serverName} is not connected`,
-      );
-    }
-
-    if (!this.serverStatusMap.get(serverName)) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        `Server ${serverName} is not running`,
-      );
-    }
+    const client = await this.resolveConnectedClient(serverId, serverName);
 
     return this.executeWithHooksAndLogging(
       "resources/read",
@@ -530,20 +553,7 @@ export class RequestHandlers extends RequestHandlerBase {
       );
     }
 
-    const client = this.clients.get(serverId);
-    if (!client) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        `Server ${serverName} is not connected`,
-      );
-    }
-
-    if (!this.serverStatusMap.get(serverName)) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        `Server ${serverName} is not running`,
-      );
-    }
+    const client = await this.resolveConnectedClient(serverId, serverName);
 
     return this.executeWithHooksAndLogging(
       "prompts/get",
@@ -710,20 +720,7 @@ export class RequestHandlers extends RequestHandlerBase {
       );
     }
 
-    const client = this.clients.get(serverId);
-    if (!client) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        `Server ${serverName} is not connected`,
-      );
-    }
-
-    if (!this.serverStatusMap.get(serverName)) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        `Server ${serverName} is not running`,
-      );
-    }
+    const client = await this.resolveConnectedClient(serverId, serverName);
 
     return this.executeWithHooksAndLogging(
       "tools/call",

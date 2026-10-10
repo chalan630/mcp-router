@@ -8,11 +8,18 @@ import {
   ServerService,
 } from "@/main/modules/mcp-server-manager/server-service";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
 import {
   connectToMCPServer,
   substituteArgsParameters,
 } from "../mcp-apps-manager/mcp-apps-manager.service";
 import { getLogService } from "@/main/modules/mcp-logger/mcp-logger.service";
+
+// 一定時間使われていない接続だけを ping で生存確認する（呼び出しの連続で毎回往復しない）
+const IDLE_CONNECTION_CHECK_MS = 45_000;
+const PING_TIMEOUT_MS = 3_000;
+// アプリ内部からの再接続であることをログ上で区別するためのクライアント ID
+const SYSTEM_CLIENT_ID = "mcp-router-system";
 
 /**
  * Core server lifecycle management
@@ -22,6 +29,7 @@ export class MCPServerManager {
   private clients: Map<string, Client> = new Map();
   private serverNameToIdMap: Map<string, string> = new Map();
   private serverStatusMap: Map<string, boolean> = new Map();
+  private clientLastUsedAt: Map<string, number> = new Map();
   private serversDir: string;
   private serverService!: ServerService;
   private eventEmitter = new EventEmitter();
@@ -162,6 +170,7 @@ export class MCPServerManager {
     this.clients.clear();
     this.serverNameToIdMap.clear();
     this.serverStatusMap.clear();
+    this.clientLastUsedAt.clear();
   }
 
   /**
@@ -324,6 +333,7 @@ export class MCPServerManager {
     const client = this.clients.get(id);
     if (!client) {
       server.status = "stopped";
+      this.clientLastUsedAt.delete(id);
       return true;
     }
 
@@ -351,6 +361,7 @@ export class MCPServerManager {
       // Disconnect the client
       client.close();
       this.clients.delete(id);
+      this.clientLastUsedAt.delete(id);
       server.status = "stopped";
       this.eventEmitter.emit("server-stopped", id);
       return true;
@@ -508,6 +519,119 @@ export class MCPServerManager {
         error:
           error instanceof Error ? error.message : "Unknown error occurred",
       };
+    }
+  }
+
+  /**
+   * Verify that a cached client is still usable, reconnecting it when it is not.
+   *
+   * The connection is only probed after a period of inactivity: a suspended
+   * machine tears down pipes and sockets while the app keeps the stale clients
+   * cached, and probing on every call would add a round trip to each request.
+   */
+  public async ensureClientAlive(id: string): Promise<Client | undefined> {
+    const client = this.clients.get(id);
+    if (!client) {
+      return undefined;
+    }
+
+    const now = Date.now();
+    const lastUsedAt = this.clientLastUsedAt.get(id);
+    if (
+      lastUsedAt !== undefined &&
+      now - lastUsedAt < IDLE_CONNECTION_CHECK_MS
+    ) {
+      this.clientLastUsedAt.set(id, now);
+      return client;
+    }
+
+    try {
+      await this.pingWithTimeout(client, PING_TIMEOUT_MS);
+      this.clientLastUsedAt.set(id, now);
+      return client;
+    } catch (error) {
+      if (
+        error instanceof McpError &&
+        error.code === ErrorCode.MethodNotFound
+      ) {
+        // サーバーは応答しているが ping 未対応。生存扱いにする
+        this.clientLastUsedAt.set(id, now);
+        return client;
+      }
+
+      console.warn(
+        `[MCPServerManager] Server ${id} did not respond to ping, reconnecting`,
+      );
+      return await this.reconnectServer(id, "ping timeout");
+    }
+  }
+
+  private pingWithTimeout(client: Client, timeoutMs: number): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject(new Error(`Ping timed out after ${timeoutMs}ms`)),
+        timeoutMs,
+      );
+
+      client.ping().then(
+        (result) => {
+          clearTimeout(timer);
+          resolve(result);
+        },
+        (error) => {
+          clearTimeout(timer);
+          reject(error);
+        },
+      );
+    });
+  }
+
+  /**
+   * Reconnect every server that is currently running.
+   *
+   * Called after the machine resumes from sleep: the cached clients may point
+   * at closed pipes or dead sockets, so they are dropped and re-established.
+   * Persisted settings are left untouched.
+   */
+  public async reconnectRunningServers(reason: string): Promise<void> {
+    const runningIds: string[] = [];
+    for (const [id, server] of this.servers) {
+      if (this.clients.has(id) || this.serverStatusMap.get(server.name)) {
+        runningIds.push(id);
+      }
+    }
+
+    if (runningIds.length === 0) {
+      return;
+    }
+
+    console.log(
+      `[MCPServerManager] Reconnecting ${runningIds.length} running server(s) after ${reason}`,
+    );
+
+    for (const id of runningIds) {
+      await this.reconnectServer(id, reason);
+    }
+  }
+
+  /**
+   * Reconnect a single server without modifying persisted settings.
+   */
+  private async reconnectServer(
+    id: string,
+    reason: string,
+  ): Promise<Client | undefined> {
+    try {
+      // persist = false: 再接続はユーザー設定（autoStart）を変更しない
+      this.stopServer(id, SYSTEM_CLIENT_ID, false);
+      await this.startServer(id, SYSTEM_CLIENT_ID, false);
+      return this.clients.get(id);
+    } catch (error) {
+      console.error(
+        `[MCPServerManager] Failed to reconnect server ${id} after ${reason}:`,
+        error,
+      );
+      return undefined;
     }
   }
 
