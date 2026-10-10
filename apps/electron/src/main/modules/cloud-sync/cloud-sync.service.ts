@@ -1,7 +1,6 @@
 import { SERVICE_RETIRED, SERVICE_RETIRED_MESSAGE } from "@mcp_router/shared";
 import { safeStorage } from "electron";
 import crypto from "crypto";
-import argon2 from "argon2";
 import type {
   CloudSyncBlobEnvelope,
   CloudSyncState,
@@ -279,6 +278,12 @@ export class CloudSyncService {
   }
 
   private async deriveKey(passphrase: string, salt: Buffer): Promise<Buffer> {
+    // argon2 は Electron ABI 向けのネイティブビルドを必要とする。クラウド同期は
+    // SERVICE_RETIRED で停止済みのためこの経路は実行されず、起動時に読み込むと
+    // ネイティブビルドが無い環境でアプリが起動できなくなる。
+    // 実際に鍵導出が必要になった時点で解決する。
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const argon2 = require("argon2") as typeof import("argon2");
     const key = await argon2.hash(passphrase, {
       type: argon2.argon2id,
       raw: true,
