@@ -1,4 +1,3 @@
-import RetirementNotice from "./RetirementNotice";
 import React, { useState, useEffect, useCallback } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import PageLayout from "./layout/PageLayout";
@@ -151,7 +150,6 @@ const App: React.FC = () => {
         <div className="flex flex-col flex-1 pt-8">
           {/*<SidebarTrigger />*/}
 
-          <RetirementNotice />
           <Routes>
             {/* Public routes - no authentication required */}
             <Route element={<PageLayout />}>
