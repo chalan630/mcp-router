@@ -134,6 +134,8 @@
   - Local workspaces validate the header against `ProjectRepository`; remote workspaces skip validation.
 - Authentication: validate Authorization (`Bearer <token>`) and enforce per‑server access.
 - The HTTP layer attaches `_meta.token` and `_meta.projectId` to requests for the aggregator handlers.
+- Each request is served by its own `Server` + `StreamableHTTPServerTransport` pair, created by `AggregatorServer.createRequestScope()` and closed together with the response.
+  - A stateless transport (`sessionIdGenerator: undefined`) must not be reused across requests. The SDK rejects the second request on a reused instance, and the rejection surfaces as a **body-less HTTP 500**, which is easy to mistake for an authentication or network failure.
 
 ## Security & Privacy
 - Projects are organizational metadata stored in the local DB; no sensitive data in project fields.

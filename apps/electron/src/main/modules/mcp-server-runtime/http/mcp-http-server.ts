@@ -13,6 +13,8 @@ const MAX_AUTHORIZATION_HEADER_LENGTH = 4096;
 const MAX_PROJECT_HEADER_LENGTH = 128;
 const BEARER_TOKEN_PREFIX_PATTERN = /^Bearer\s+/i;
 const DEFAULT_HTTP_HOST = "127.0.0.1";
+// アイドル状態の SSE 接続が OS や中間機器に切断されないよう定期的にコメントフレームを送る
+const SSE_HEARTBEAT_INTERVAL_MS = 25_000;
 
 function hasHttpHeaderControlChars(value: string): boolean {
   for (const char of value) {
@@ -285,10 +287,19 @@ export class MCPHttpServer {
         // Append metadata for downstream handlers
         const token = req.headers["authorization"];
         this.attachRequestMetadata(modifiedBody, token, projectFilter);
-        // For local workspaces, use local aggregator
-        await this.aggregatorServer
-          .getTransport()
-          .handleRequest(req, res, modifiedBody);
+
+        // A stateless Streamable HTTP transport must not be reused across
+        // requests, so every request gets its own server/transport pair and
+        // both are released together with the response.
+        const { server, transport } =
+          this.aggregatorServer.createRequestScope();
+        res.on("close", () => {
+          void server.close();
+          void transport.close();
+        });
+
+        await server.connect(transport);
+        await transport.handleRequest(req, res, modifiedBody);
       } catch (error) {
         console.error("Error handling MCP request:", error);
         if (!res.headersSent) {
@@ -350,10 +361,23 @@ export class MCPHttpServer {
         this.sseSessions.set(sessionId, transport);
         this.sseSessionProjects.set(sessionId, projectFilter);
 
+        // 接続ごとに Server を用意する。1 つの Server を複数の SSE 接続で共有すると
+        // transport が上書きされ、応答が別のクライアントへ流れてしまう。
+        const sseServer = this.aggregatorServer.createServer();
+
+        // アイドル切断を避けるためのハートビート
+        const heartbeat = setInterval(() => {
+          if (!res.writableEnded) {
+            res.write(": ping\n\n");
+          }
+        }, SSE_HEARTBEAT_INTERVAL_MS);
+
         // クライアントが切断したときのクリーンアップ
         res.on("close", () => {
+          clearInterval(heartbeat);
           this.sseSessions.delete(sessionId);
           this.sseSessionProjects.delete(sessionId);
+          void sseServer.close();
         });
 
         if (platformManager.isRemoteWorkspace()) {
@@ -363,11 +387,8 @@ export class MCPHttpServer {
           console.warn(
             "Remote aggregator SSE not yet implemented, using local aggregator",
           );
-          await this.aggregatorServer.getAggregatorServer().connect(transport);
-        } else {
-          // For local workspaces, connect to local aggregator server
-          await this.aggregatorServer.getAggregatorServer().connect(transport);
         }
+        await sseServer.connect(transport);
 
         // セッションID情報をクライアントに送信
         res.write(`data: ${JSON.stringify({ sessionId })}\n\n`);
