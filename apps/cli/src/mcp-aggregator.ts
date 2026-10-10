@@ -1,4 +1,4 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import {
   CallToolRequestSchema,
@@ -11,17 +11,15 @@ import {
   GetPromptRequestSchema,
   ListPromptsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import {
-  normalizeProxiedToolResult,
-  type ServerClient,
-} from "@mcp_router/shared";
+import { normalizeProxiedToolResult } from "./mcp-result-utils.js";
 
 /**
  * Pure MCP Aggregator that combines capabilities from multiple MCP servers
  */
 export class MCPAggregator {
   private server: Server;
-  private clients: Map<string, ServerClient> = new Map();
+  private clients: Map<string, { id: string; name: string; client: Client }> =
+    new Map();
   private toolToServerMap: Map<string, string> = new Map();
   private resourceProtocolMap: Map<string, string> = new Map();
 
@@ -340,7 +338,7 @@ export class MCPAggregator {
     const [, serverName, path] = match;
 
     // Find the server client by name
-    let targetClient: ServerClient | undefined;
+    let targetClient: { id: string; name: string; client: Client } | undefined;
     for (const client of this.clients.values()) {
       if (client.name === serverName) {
         targetClient = client;

@@ -3,7 +3,6 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { MCPAggregator } from "../mcp-aggregator.js";
-import type { ServeServerConfig } from "@mcp_router/shared";
 
 /**
  * Executes the serve command, starting an HTTP server that accepts
@@ -32,7 +31,12 @@ export function parseServeArgs(args: string[]) {
   const options = {
     host: DEFAULT_HOST,
     port: 3283,
-    servers: [] as ServeServerConfig[],
+    servers: [] as Array<{
+      id: string;
+      name: string;
+      command: string;
+      args: string[];
+    }>,
     verbose: false,
     token: undefined as string | undefined,
   };
@@ -136,7 +140,12 @@ class StdioMcpBridgeServer {
     private options: {
       host: string;
       port: number;
-      servers: ServeServerConfig[];
+      servers: Array<{
+        id: string;
+        name: string;
+        command: string;
+        args: string[];
+      }>;
       verbose?: boolean;
       token?: string;
     },

@@ -36,25 +36,3 @@ export async function fetchWithToken(
     headers,
   });
 }
-
-/**
- * Make a fetch request with authentication token and parse the JSON response
- * @param path The API path to fetch
- * @param options Fetch options
- * @returns Parsed JSON response
- * @throws Error if token is not available, fetch fails, or response is not valid JSON
- */
-export async function fetchWithTokenJson<T = any>(
-  path: string,
-  options: RequestInit & { token?: string; apiBaseUrl?: string } = {},
-): Promise<T> {
-  const response = await fetchWithToken(path, options);
-
-  if (!response.ok) {
-    throw new Error(
-      `API request failed: ${response.status} ${response.statusText}`,
-    );
-  }
-
-  return response.json() as Promise<T>;
-}

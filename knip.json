@@ -4,19 +4,8 @@
     ".": {
       "entry": [
         "*.config.{js,ts,mjs}",
-        "turbo.json"
-      ],
-      "ignore": [
-        "**/*.d.ts",
-        "**/dist/**",
-        "**/out/**",
-        "**/.turbo/**",
-        "**/.webpack/**",
-        "**/coverage/**",
-        "**/build/**",
-        "**/.next/**",
-        "**/node_modules/**",
-        "**/*.min.js"
+        "turbo.json",
+        "tools/find-unused-i18n.mjs"
       ]
     },
     "apps/electron": {
@@ -32,17 +21,6 @@
       ],
       "project": [
         "src/**/*.{ts,tsx,js,jsx}"
-      ],
-      "ignore": [
-        "**/*.d.ts",
-        "**/dist/**",
-        "**/out/**",
-        "**/.turbo/**",
-        "**/.webpack/**",
-        "**/coverage/**",
-        "**/build/**",
-        "**/node_modules/**",
-        "**/*.min.js"
       ],
       "ignoreDependencies": [
         "@electron-forge/publisher-github",
@@ -62,14 +40,6 @@
       ],
       "project": [
         "src/**/*.ts"
-      ],
-      "ignore": [
-        "**/*.d.ts",
-        "**/dist/**",
-        "**/.turbo/**",
-        "**/node_modules/**",
-        "**/*.test.ts",
-        "**/*.spec.ts"
       ]
     },
     "packages/ui": {
@@ -79,12 +49,6 @@
         "src/**/*.{ts,tsx}"
       ],
       "ignore": [
-        "**/*.d.ts",
-        "**/dist/**",
-        "**/.turbo/**",
-        "**/node_modules/**",
-        "**/*.test.{ts,tsx}",
-        "**/*.spec.{ts,tsx}",
         "**/*.stories.{ts,tsx}"
       ],
       "ignoreDependencies": []
@@ -95,14 +59,6 @@
       ],
       "project": [
         "src/**/*.ts"
-      ],
-      "ignore": [
-        "**/*.d.ts",
-        "**/dist/**",
-        "**/.turbo/**",
-        "**/node_modules/**",
-        "**/*.test.ts",
-        "**/*.spec.ts"
       ]
     },
     "packages/remote-api-types": {
@@ -110,14 +66,6 @@
       ],
       "project": [
         "src/**/*.ts"
-      ],
-      "ignore": [
-        "**/*.d.ts",
-        "**/dist/**",
-        "**/.turbo/**",
-        "**/node_modules/**",
-        "**/*.test.ts",
-        "**/*.spec.ts"
       ]
     },
     "packages/tailwind-config": {
@@ -125,12 +73,6 @@
       ],
       "project": [
         "*.js"
-      ],
-      "ignore": [
-        "**/node_modules/**",
-        "**/.turbo/**",
-        "**/*.test.js",
-        "**/*.spec.js"
       ],
       "ignoreDependencies": []
     }

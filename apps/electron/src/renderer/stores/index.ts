@@ -1,5 +1,4 @@
 // Platform-independent stores (no PlatformAPI dependency)
-export * from "./ui-store";
 export * from "./server-editing-store";
 export * from "./workspace-store";
 export * from "./view-preferences-store";

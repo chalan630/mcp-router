@@ -17,11 +17,6 @@
     "search": "検索",
     "update": "アップデート"
   },
-  "login": {
-    "title": "MCP Routerにログイン",
-    "description": "この機能にアクセスするためにログインしてください。",
-    "loginButton": "ログイン"
-  },
   "logs": {
     "activity": {
       "title": "アクティビティ",
@@ -57,13 +52,7 @@
       }
     },
     "viewer": {
-      "refresh": "データを更新",
-      "dateFormat": {
-        "long": "{{date, datetime}}",
-        "shortDate": "MM-DD",
-        "shortDateTime": "MM-DD HH:mm",
-        "shortDateTimeWithSeconds": "MM-DD HH:mm:ss"
-      }
+      "refresh": "データを更新"
     }
   },
   "discoverServers": {
@@ -181,7 +170,6 @@
     "searchStrategyBm25": "BM25"
   },
   "serverSettings": {
-    "title": "{{serverName}} 設定",
     "project": "プロジェクト",
     "manageProjects": "プロジェクトを管理",
     "delete": "サーバーを削除",
@@ -316,11 +304,6 @@
     }
   },
   "retirement": {
-    "title": "MCP Router はサポートを終了しました",
-    "summary": "2026年9月18日をもって開発・サポート・セキュリティ更新を終了しました。クラウドサービスと課金も終了しています。",
-    "local": "ローカルの MCP サーバーと保存済み設定は引き続き利用できます。ログイン・クラウド同期・フィードバック送信は利用できません。",
-    "export": "移行前に各ローカルワークスペースを選び、サーバー画面の Export から設定を保存してください。出力ファイルには認証情報が含まれる場合があるため、非公開で保管してください。",
-    "continue": "ローカル機能を使い続ける",
-    "details": "サポート終了・移行ガイド"
+    "local": "ローカルの MCP サーバーと保存済み設定は引き続き利用できます。ログイン・クラウド同期・フィードバック送信は利用できません。"
   }
 }

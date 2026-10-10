@@ -190,9 +190,7 @@ describe("MCPHttpServer with the real MCP SDK", () => {
     const reuseServer = http.createServer((req, res) => {
       void transport.handleRequest(req, res);
     });
-    await new Promise((resolve) =>
-      reuseServer.listen(0, "127.0.0.1", resolve),
-    );
+    await new Promise((resolve) => reuseServer.listen(0, "127.0.0.1", resolve));
     const port = reuseServer.address().port;
 
     try {

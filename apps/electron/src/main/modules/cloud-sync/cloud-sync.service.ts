@@ -282,7 +282,7 @@ export class CloudSyncService {
     // SERVICE_RETIRED で停止済みのためこの経路は実行されず、起動時に読み込むと
     // ネイティブビルドが無い環境でアプリが起動できなくなる。
     // 実際に鍵導出が必要になった時点で解決する。
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+
     const argon2 = require("argon2") as typeof import("argon2");
     const key = await argon2.hash(passphrase, {
       type: argon2.argon2id,

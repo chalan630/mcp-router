@@ -47,7 +47,7 @@ type Props = {
   ) => Promise<Project>;
 };
 
-export const ProjectSettingsModal: React.FC<Props> = ({
+const ProjectSettingsModal: React.FC<Props> = ({
   open,
   onOpenChange,
   projects,

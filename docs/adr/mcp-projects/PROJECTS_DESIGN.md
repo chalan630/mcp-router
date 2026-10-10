@@ -97,13 +97,10 @@
 - Apply project sections to both List and Grid views.
 
 ### Settings modal
-- In `ServerSettingsModal`:
-  - Select project (including Unassigned)
-  - Open `ProjectSettingsModal` via “Manage Projects”
-  - Delete server
-- In `ProjectSettingsModal`:
-  - Create / rename / delete projects
-  - Warn that deleting a project will also delete its servers
+- The initial design used `ServerSettingsModal`; that component has since been removed.
+- Project assignment and the “Manage Projects” action are now part of `ServerDetailsAdvancedSheet`.
+- Project creation, renaming, deletion, and optimization settings are managed by `ProjectSettingsModal`, opened from the server details UI.
+- Server deletion uses the confirmation dialog in `Home.tsx`.
 
 ### Sidebar filter
 - Show “All”, “Unassigned”, and each project in the “Projects” group.

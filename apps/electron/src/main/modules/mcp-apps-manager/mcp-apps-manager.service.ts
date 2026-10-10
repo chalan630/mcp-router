@@ -891,21 +891,6 @@ export async function connectToMCPServer(
   return getMcpAppsService().connectToMCPServer(server, clientName);
 }
 
-export async function fetchServerTools(client: Client): Promise<any[]> {
-  return getMcpAppsService().fetchServerTools(client);
-}
-
-export async function fetchServerResources(client: Client): Promise<any[]> {
-  return getMcpAppsService().fetchServerResources(client);
-}
-
-export async function readServerResource(
-  client: Client,
-  resourceUri: string,
-): Promise<any> {
-  return getMcpAppsService().readServerResource(client, resourceUri);
-}
-
 export function substituteArgsParameters(
   argsTemplate: string[],
   env: Record<string, string>,
@@ -916,40 +901,4 @@ export function substituteArgsParameters(
     env,
     inputParams,
   );
-}
-
-// App path exports for mcp-config-importer
-export function claudeConfig(): string {
-  const appPaths = new AppPaths();
-  return appPaths.claudeConfig();
-}
-
-export function clineConfig(): string {
-  const appPaths = new AppPaths();
-  return appPaths.clineConfig();
-}
-
-export function windsurfConfig(): string {
-  const appPaths = new AppPaths();
-  return appPaths.windsurfConfig();
-}
-
-export function cursorConfig(projectDir = ""): string {
-  const appPaths = new AppPaths();
-  return appPaths.cursorConfig(projectDir);
-}
-
-export function vscodeConfig(): string {
-  const appPaths = new AppPaths();
-  return appPaths.vscodeConfig();
-}
-
-export function codexConfig(): string {
-  const appPaths = new AppPaths();
-  return appPaths.codexConfig();
-}
-
-export async function exists(filePath: string): Promise<boolean> {
-  const appPaths = new AppPaths();
-  return appPaths.exists(filePath);
 }

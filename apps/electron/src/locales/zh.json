@@ -15,23 +15,12 @@
     "update": "更新"
   },
   "locale": "zh-CN",
-  "login": {
-    "title": "登录 MCP Router",
-    "description": "登录以访问此功能",
-    "loginButton": "登录"
-  },
   "home": {
     "title": "MCP Router"
   },
   "logs": {
     "viewer": {
-      "refresh": "刷新数据",
-      "dateFormat": {
-        "long": "{{date, datetime}}",
-        "shortDate": "MM-DD",
-        "shortDateTime": "MM-DD HH:mm",
-        "shortDateTimeWithSeconds": "MM-DD HH:mm:ss"
-      }
+      "refresh": "刷新数据"
     }
   },
   "discoverServers": {
@@ -149,7 +138,6 @@
     "searchStrategyBm25": "BM25"
   },
   "serverSettings": {
-    "title": "{{serverName}} 设置",
     "project": "项目",
     "manageProjects": "管理项目",
     "delete": "删除服务器",
@@ -262,11 +250,6 @@
     }
   },
   "retirement": {
-    "title": "MCP Router 已结束支持",
-    "summary": "开发、支持和安全更新已于 2026 年 9 月 18 日结束。云服务和计费也已停止。",
-    "local": "本地 MCP 服务器和已保存的设置仍可使用。登录、云同步和反馈提交已停止。",
-    "export": "迁移前，请逐一选择本地工作区，并在服务器页面使用 Export 保存设置。导出文件可能包含凭据，请私密保存。",
-    "continue": "继续使用本地功能",
-    "details": "支持结束与迁移指南"
+    "local": "本地 MCP 服务器和已保存的设置仍可使用。登录、云同步和反馈提交已停止。"
   }
 }

@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { IconSearch } from "@tabler/icons-react";
 import { WordCloudItem } from "@mcp_router/shared";
 import { Card } from "@mcp_router/ui";
 
@@ -69,7 +70,7 @@ const QueryWordCloud: React.FC<QueryWordCloudProps> = ({
     return (
       <Card className="p-4 h-full">
         <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-          <span>🔍</span>
+          <IconSearch aria-hidden="true" className="h-4 w-4" />
           {t("logs.activity.wordcloud.title", "Query Keywords")}
         </h3>
         <div className="flex items-center justify-center h-24 text-muted-foreground text-sm">
@@ -82,7 +83,7 @@ const QueryWordCloud: React.FC<QueryWordCloudProps> = ({
   return (
     <Card className="p-4 h-full">
       <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-        <span>🔍</span>
+        <IconSearch aria-hidden="true" className="h-4 w-4" />
         {t("logs.activity.wordcloud.title", "Query Keywords")}
       </h3>
 

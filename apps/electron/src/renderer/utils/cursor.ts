@@ -35,15 +35,3 @@ export function decodeCursor(cursor: string): CursorData | null {
     return null;
   }
 }
-
-/**
- * 空のカーソルを表す定数
- */
-export const EMPTY_CURSOR = "";
-
-/**
- * カーソルが空かどうかを判定
- */
-export function isEmptyCursor(cursor?: string): boolean {
-  return !cursor || cursor === EMPTY_CURSOR;
-}

@@ -60,6 +60,7 @@ tsconfig.tsbuildinfo
 *.swo
 *~
 .claude
+.codegraph/
 
 # OS
 Thumbs.db
