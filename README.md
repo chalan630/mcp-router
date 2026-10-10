@@ -1,5 +1,7 @@
 > **End of support — September 18, 2026.** Development, support and security updates have ended. Cloud services and billing have stopped. v0.6.4 is the final desktop release for existing users; local features remain available. New adoption is not recommended. [End-of-support and migration guide](docs/END_OF_SUPPORT.md).
 
+> Fork-specific maintenance changes are listed in [CHANGELOG.md](CHANGELOG.md).
+
 The material below describes the historical product. Cloud features are no longer available.
 
 <h1 align="center">MCP Router</h1>
