@@ -1,29 +1,12 @@
 import type {
   SearchRequest,
   SearchResponse,
-  SearchResult,
   MCPServer,
   ToolInfo,
+  SearchProvider,
 } from "@mcp_router/shared";
 import type { MCPServerManager } from "@/main/modules/mcp-server-manager/mcp-server-manager";
 import { BM25SearchProvider } from "./bm25-search-provider";
-
-/**
- * Search request parameters for search providers.
- */
-export type SearchProviderRequest = {
-  query: string[];
-  context?: string;
-  tools: ToolInfo[];
-  maxResults?: number;
-};
-
-/**
- * Interface for search providers.
- */
-export interface SearchProvider {
-  search(request: SearchProviderRequest): Promise<SearchResult[]>;
-}
 
 type SearchContext = {
   projectId: string | null;

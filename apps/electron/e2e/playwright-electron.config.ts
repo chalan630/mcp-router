@@ -1,5 +1,4 @@
 import { defineConfig } from "@playwright/test";
-import path from "path";
 
 /**
  * Electron app E2E test configuration

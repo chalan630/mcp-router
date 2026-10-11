@@ -95,14 +95,14 @@ export class MainDatabaseMigration {
       id: "20250627_ensure_tokens_table_in_main_db",
       description:
         "Ensure tokens table exists in main database for workspace sharing",
-      execute: (db) => this.migrateEnsureTokensTableInMainDb(db),
+      execute: () => this.migrateEnsureTokensTableInMainDb(),
     });
 
     // Hooksテーブルを追加
     this.migrations.push({
       id: "20250805_add_hooks_table",
       description: "Add hooks table for MCP request/response hooks",
-      execute: (db) => this.migrateAddHooksTable(db),
+      execute: () => this.migrateAddHooksTable(),
     });
 
     // Projects optimization カラムを追加
@@ -124,38 +124,27 @@ export class MainDatabaseMigration {
    * 全てのマイグレーションを実行
    */
   public runMigrations(): void {
-    try {
-      const db = this.db;
+    const db = this.db;
 
-      // マイグレーション管理テーブルの初期化
-      this.initMigrationTable();
+    // マイグレーション管理テーブルの初期化
+    this.initMigrationTable();
 
-      // 実行済みマイグレーションを取得
-      const completedMigrations = this.getCompletedMigrations();
+    // 実行済みマイグレーションを取得
+    const completedMigrations = this.getCompletedMigrations();
 
-      // 各マイグレーションを実行（実行済みのものはスキップ）
-      for (const migration of this.migrations) {
-        // 既に実行済みの場合はスキップ
-        if (completedMigrations.has(migration.id)) {
-          continue;
-        }
-
-        console.log(
-          `Running migration ${migration.id}: ${migration.description}`,
-        );
-
-        try {
-          // マイグレーションを実行（同期的に）
-          migration.execute(db);
-
-          // マイグレーションを完了としてマーク
-          this.markMigrationComplete(migration.id);
-        } catch (error) {
-          throw error;
-        }
+    // 各マイグレーションを実行（実行済みのものはスキップ）
+    for (const migration of this.migrations) {
+      // 既に実行済みの場合はスキップ
+      if (completedMigrations.has(migration.id)) {
+        continue;
       }
-    } catch (error) {
-      throw error;
+
+      console.log(
+        `Running migration ${migration.id}: ${migration.description}`,
+      );
+
+      migration.execute(db);
+      this.markMigrationComplete(migration.id);
     }
   }
 
@@ -514,17 +503,9 @@ export class MainDatabaseMigration {
   /**
    * トークンテーブルをメインDBに確実に作成するマイグレーション
    */
-  private migrateEnsureTokensTableInMainDb(db: SqliteManager): void {
-    try {
-      // tokensテーブルの作成はTokenRepositoryで行うため、ここでは何もしない
-      console.log("Creation of tokens table is delegated to TokenRepository");
-    } catch (error) {
-      console.error(
-        "Error while ensuring tokens table in main database:",
-        error,
-      );
-      throw error;
-    }
+  private migrateEnsureTokensTableInMainDb(): void {
+    // tokensテーブルの作成はTokenRepositoryで行うため、ここでは何もしない
+    console.log("Creation of tokens table is delegated to TokenRepository");
   }
 
   // ==========================================================================
@@ -578,15 +559,10 @@ export class MainDatabaseMigration {
   /**
    * hooksテーブルを追加するマイグレーション
    */
-  private migrateAddHooksTable(db: SqliteManager): void {
-    try {
-      // HookRepositoryが初めて呼ばれた時に
-      // テーブルが作成されるため、ここでは何もしない
-      console.log("Creation of hooks table is delegated to HookRepository");
-    } catch (error) {
-      console.error("Error occurred during hooks table migration:", error);
-      throw error;
-    }
+  private migrateAddHooksTable(): void {
+    // HookRepositoryが初めて呼ばれた時に
+    // テーブルが作成されるため、ここでは何もしない
+    console.log("Creation of hooks table is delegated to HookRepository");
   }
 
   /**

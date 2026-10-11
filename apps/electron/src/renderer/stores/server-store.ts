@@ -1,50 +1,5 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
-import {
-  MCPServer,
-  MCPServerConfig,
-  ServerState,
-  PlatformAPI,
-} from "@mcp_router/shared";
-
-export interface ServerStoreState extends ServerState {
-  // Actions
-  setServers: (servers: MCPServer[]) => void;
-  addServer: (server: MCPServer) => void;
-  updateServer: (id: string, updates: Partial<MCPServer>) => void;
-  removeServer: (id: string) => void;
-  setServerStatus: (id: string, status: MCPServer["status"]) => void;
-
-  // Loading actions
-  setLoading: (loading: boolean) => void;
-  setUpdating: (serverId: string, updating: boolean) => void;
-
-  // Error actions
-  setError: (error: string | null) => void;
-
-  // UI actions
-  setSearchQuery: (query: string) => void;
-  setExpandedServerId: (id: string | null) => void;
-  setSelectedServerId: (id: string | null) => void;
-
-  // Server operations
-  startServer: (id: string) => Promise<void>;
-  stopServer: (id: string) => Promise<void>;
-  refreshServers: () => Promise<void>;
-  createServer: (config: MCPServerConfig) => Promise<void>;
-  updateServerConfig: (
-    id: string,
-    config: Partial<MCPServerConfig>,
-  ) => Promise<void>;
-  updateServerToolPermissions: (
-    id: string,
-    permissions: Record<string, boolean>,
-  ) => Promise<void>;
-  deleteServer: (id: string) => Promise<void>;
-
-  // Store management
-  clearStore: () => void;
-}
-
+import type { PlatformAPI, ServerStoreState } from "@mcp_router/shared";
 export const createServerStore = (
   getPlatformAPI: () => PlatformAPI,
 ): UseBoundStore<StoreApi<ServerStoreState>> =>

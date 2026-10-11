@@ -55,11 +55,7 @@ const ICON_MAP: Record<string, string> = {
  * MCP Apps Service - 統合されたMCPアプリケーション管理サービス
  * アプリケーション設定、トークン管理、クライアントユーティリティを統合
  */
-export class McpAppsManagerService extends SingletonService<
-  Token,
-  string,
-  McpAppsManagerService
-> {
+export class McpAppsManagerService extends SingletonService {
   private tokenManager: TokenManager;
   private mcpClient: MCPClient;
   private appPaths: AppPaths;

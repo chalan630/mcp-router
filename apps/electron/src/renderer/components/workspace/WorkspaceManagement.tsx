@@ -21,12 +21,10 @@ import {
 import { Monitor, Pencil, Trash2, Plus } from "lucide-react";
 import { useWorkspaceStore } from "@/renderer/stores/workspace-store";
 import { WorkspaceDialog } from "./WorkspaceDialog";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const WorkspaceManagement: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const {
     workspaces,
     currentWorkspace,
@@ -63,7 +61,7 @@ const WorkspaceManagement: React.FC = () => {
       setDeletingWorkspace(null);
       // Reload workspaces to refresh the list
       await loadWorkspaces();
-    } catch (error) {
+    } catch {
       toast.error(t("workspace.errors.deleteFailed"));
     }
   };
@@ -73,7 +71,7 @@ const WorkspaceManagement: React.FC = () => {
 
     try {
       await switchWorkspace(workspaceId);
-    } catch (error) {
+    } catch {
       toast.error(t("workspace.errors.switchFailed"));
     }
   };

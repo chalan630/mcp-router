@@ -1,6 +1,4 @@
 import { Page, ElectronApplication } from "@playwright/test";
-import fs from "fs/promises";
-import path from "path";
 
 export async function waitForAppReady(page: Page) {
   // Wait for the app to be fully loaded

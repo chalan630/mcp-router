@@ -1,7 +1,7 @@
 import { ClientType } from "@mcp_router/shared";
 import { AppPaths } from "./app-paths";
 
-export type StandardAppId =
+type StandardAppId =
   | "codex"
   | "claude"
   | "cline"
@@ -9,17 +9,11 @@ export type StandardAppId =
   | "cursor"
   | "vscode";
 
-export type IconKey =
-  | "openai"
-  | "claude"
-  | "cline"
-  | "windsurf"
-  | "cursor"
-  | "vscode";
+type IconKey = "openai" | "claude" | "cline" | "windsurf" | "cursor" | "vscode";
 
-export type AppConfigKind = "standard-json" | "vscode-json" | "codex";
+type AppConfigKind = "standard-json" | "vscode-json" | "codex";
 
-export interface StandardAppDefinition {
+interface StandardAppDefinition {
   id: StandardAppId;
   name: string;
   clientType: ClientType;

@@ -1,40 +1,11 @@
 import { SERVICE_RETIRED } from "@mcp_router/shared";
 import { create, StoreApi, UseBoundStore } from "zustand";
-import {
-  AppSettings,
-  AuthStoreState,
-  UserInfo,
-  SubscriptionStatus,
+import type {
+  AuthStoreInterface,
   PlatformAPI,
+  SubscriptionStatus,
+  UserInfo,
 } from "@mcp_router/shared";
-
-export interface AuthStoreInterface extends AuthStoreState {
-  // Actions
-  setAuthenticated: (authenticated: boolean) => void;
-  setUserData: (
-    userData: Partial<Pick<AuthStoreState, "userId" | "authToken">>,
-  ) => void;
-  setUserInfo: (userInfo: UserInfo | null) => void;
-
-  // Loading actions
-  setLoggingIn: (loading: boolean) => void;
-
-  // Error actions
-  setLoginError: (error: string | null) => void;
-  clearErrors: () => void;
-
-  // Auth operations
-  login: () => Promise<void>;
-  logout: () => Promise<void>;
-  checkAuthStatus: (forceRefresh?: boolean) => Promise<void>;
-  subscribeToAuthChanges: () => () => void;
-
-  // Initialize from settings
-  initializeFromSettings: (settings: AppSettings) => void;
-
-  // Store management
-  clearStore: () => void;
-}
 
 const parseSubscriptionStatus = (
   status?: unknown,

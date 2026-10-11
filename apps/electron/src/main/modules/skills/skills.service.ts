@@ -16,11 +16,7 @@ import type {
 /**
  * Skills service for managing agent skills
  */
-export class SkillService extends SingletonService<
-  Skill,
-  string,
-  SkillService
-> {
+export class SkillService extends SingletonService {
   private fileManager: SkillsFileManager;
 
   protected constructor() {

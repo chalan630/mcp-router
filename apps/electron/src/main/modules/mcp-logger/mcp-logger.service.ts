@@ -13,11 +13,7 @@ import { McpLoggerRepository } from "./mcp-logger.repository";
 /**
  * Request log service class
  */
-export class McpLoggerService extends SingletonService<
-  RequestLogEntry,
-  string,
-  McpLoggerService
-> {
+export class McpLoggerService extends SingletonService {
   private serverNameToIdMap: Map<string, string> | undefined;
 
   /**

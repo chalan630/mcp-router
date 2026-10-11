@@ -19,7 +19,6 @@ import {
   WorkflowEdge,
   WorkflowDefinition,
   WorkflowHook,
-  HookModule,
 } from "@mcp_router/shared";
 import { Button } from "@mcp_router/ui";
 import { Plus, Save, X, Check } from "lucide-react";
@@ -200,7 +199,6 @@ export default function WorkflowEditor({
 
   const validateConnection = useCallback(
     (params: Connection): boolean => {
-      const sourceNode = nodes.find((n) => n.id === params.source);
       const targetNode = nodes.find((n) => n.id === params.target);
 
       // Hook validation removed - Fire-and-forget hooks no longer have source handles

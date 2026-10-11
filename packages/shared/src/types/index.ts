@@ -15,6 +15,7 @@ export * from "./activity-types";
 
 // Re-export organized domain types
 export * from "./ui";
+export * from "./store-types";
 export * from "./database";
 // Export platform-api types except LogEntry to avoid conflict
 export {
@@ -56,3 +57,4 @@ export * from "./utils";
 export * from "./workflow-types";
 export * from "./shared-config";
 export * from "./skill-types";
+export * from "./store-types";

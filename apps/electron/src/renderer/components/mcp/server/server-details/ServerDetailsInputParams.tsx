@@ -67,7 +67,7 @@ const ServerDetailsInputParams: React.FC<ServerDetailsInputParamsProps> = ({
     param: MCPInputParam,
     value: string,
   ) => {
-    updateInputParam && updateInputParam(key, value);
+    updateInputParam?.(key, value);
     validateField(key, param, value);
   };
 
@@ -91,7 +91,7 @@ const ServerDetailsInputParams: React.FC<ServerDetailsInputParamsProps> = ({
             checked={actualValue === "true"}
             onCheckedChange={(checked) => {
               const newValue = String(checked);
-              updateInputParam && updateInputParam(key, newValue);
+              updateInputParam?.(key, newValue);
               validateField(key, param, newValue);
             }}
           />
@@ -142,7 +142,7 @@ const ServerDetailsInputParams: React.FC<ServerDetailsInputParamsProps> = ({
                     mode: param.type === "directory" ? "directory" : "file",
                   });
                   if (result.success && result.path) {
-                    updateInputParam && updateInputParam(key, result.path);
+                    updateInputParam?.(key, result.path);
                     validateField(key, param, result.path);
                   }
                 } catch (error) {

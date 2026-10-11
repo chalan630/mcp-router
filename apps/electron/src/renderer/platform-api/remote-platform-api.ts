@@ -81,7 +81,7 @@ export class RemotePlatformAPI implements PlatformAPI {
       const servers = this.unwrapResponse<MCPServer[]>(response);
       return servers;
     },
-    listTools: async (id: string): Promise<MCPTool[]> => {
+    listTools: async (_id: string): Promise<MCPTool[]> => {
       throw new Error(
         "Tool management is not yet supported for remote workspaces.",
       );

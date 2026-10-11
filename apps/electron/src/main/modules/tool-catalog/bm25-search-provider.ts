@@ -1,8 +1,9 @@
-import type { ToolInfo, SearchResult } from "@mcp_router/shared";
 import type {
+  ToolInfo,
+  SearchResult,
   SearchProvider,
   SearchProviderRequest,
-} from "./tool-catalog.service";
+} from "@mcp_router/shared";
 
 // BM25 parameters
 const BM25_K1 = 1.5; // Term frequency saturation parameter (typically 1.2-2.0)

@@ -8,18 +8,14 @@ import { logError } from "@/main/utils/logger";
  * 2. ワークスペース切り替え時のインスタンスリセット
  * 3. 動的なリポジトリ取得（ワークスペース切り替えに対応）
  * 4. エラーハンドリング共通処理
- *
- * @template T - サービスが扱うエンティティの型
- * @template K - エンティティのIDの型（デフォルトはstring）
- * @template S - サービスクラス自身の型
  */
-export abstract class SingletonService<T, K = string, S = any> {
+export abstract class SingletonService {
   /**
    * シングルトンインスタンスを格納するMapオブジェクト
    * キー: サービスクラスのコンストラクタ
    * 値: サービスのインスタンス
    */
-  private static instances: Map<Function, any> = new Map();
+  private static instances: Map<object, unknown> = new Map();
 
   /**
    * コンストラクタ
@@ -62,7 +58,7 @@ export abstract class SingletonService<T, K = string, S = any> {
    * @param ServiceClass - サービスクラスのコンストラクタ
    * @returns サービスのインスタンス
    */
-  protected static getInstanceBase<T extends SingletonService<any, any, any>>(
+  protected static getInstanceBase<T extends SingletonService>(
     this: new () => T,
   ): T {
     if (!SingletonService.instances.has(this)) {
@@ -76,9 +72,7 @@ export abstract class SingletonService<T, K = string, S = any> {
    * ワークスペース切り替え時に使用される
    * @param ServiceClass - リセットするサービスクラスのコンストラクタ
    */
-  protected static resetInstanceBase<T extends Function>(
-    ServiceClass: T,
-  ): void {
+  protected static resetInstanceBase(ServiceClass: object): void {
     SingletonService.instances.delete(ServiceClass);
   }
 

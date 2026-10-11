@@ -8,11 +8,7 @@ import {
 import type { MCPServerManager } from "@/main/modules/mcp-server-manager/mcp-server-manager";
 import { McpServerManagerRepository } from "../mcp-server-manager/mcp-server-manager.repository";
 
-export class ProjectService extends SingletonService<
-  Project,
-  string,
-  ProjectService
-> {
+export class ProjectService extends SingletonService {
   private static serverManagerProvider: (() => MCPServerManager) | null = null;
 
   protected constructor() {

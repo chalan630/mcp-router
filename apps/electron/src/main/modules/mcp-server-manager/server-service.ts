@@ -6,11 +6,7 @@ import { McpServerManagerRepository } from "./mcp-server-manager.repository";
 /**
  * Service class for managing server information
  */
-export class ServerService extends SingletonService<
-  MCPServer,
-  string,
-  ServerService
-> {
+export class ServerService extends SingletonService {
   /**
    * Constructor
    */

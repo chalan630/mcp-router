@@ -2,45 +2,21 @@
 
 ## Overview
 
-This document outlines the guidelines for TypeScript type definitions in the MCP Router project. We enforce centralized type management to improve maintainability, reduce duplication, and ensure consistency across the codebase.
+This document describes how to centralize exported types that form cross-module contracts while keeping implementation-only types close to the code that uses them. This avoids duplicate shared contracts without scattering public types.
 
 ## Type Definition Locations
 
-### ✅ Allowed Locations
+### Shared and exported types
 
-Types must only be defined in the following directories:
+Exported types that define cross-module contracts should be defined in the following locations:
 
-1. **`packages/shared/src/types/`** - Primary location for all shared types
-   - Domain types (MCP, User, Workspaceなど)
-   - API types (request/response)
-   - Common UI prop patterns
-   - Store state types
+1. **`packages/shared/src/types/`** - Primary location for shared domain and API types
+2. **`packages/remote-api-types/src/`** - Remote API schemas and generated types
+3. **`packages/ui/src/`** - Types that belong to the shared UI package
+4. **Type definition files (`*.d.ts`)** - Global type declarations
+5. **`tools/eslint-rules/`** - Types used by the lint-rule implementation
 
-2. **`packages/remote-api-types/src/`** - Remote API schema definitions
-   - Zod schemas
-   - Generated types from schemas
-
-3. **`apps/electron/src/lib/database/schema/`** - Database-specific types
-   - Table schemas
-   - Database entity types
-
-4. **`apps/electron/src/lib/platform-api/types/`** - Platform API types
-   - Electron IPC API types
-   - Platform-specific interfaces
-
-5. **`apps/electron/src/frontend/stores/types/`** - Store state types
-   - Frontend store state interfaces
-   - Store-specific types
-
-6. **Type definition files (`*.d.ts`)** - Global type declarations
-
-### ❌ Prohibited Locations
-
-Types should NOT be defined in:
-- Component files (except for component Props interfaces)
-- Service files
-- Utility files
-- Test files (except for test-specific types)
+Module-private implementation types may remain next to their use, but should not be exported from feature modules. Component Props and imperative Handle interfaces may remain in `.tsx` files, and test-specific types may remain in test code.
 
 ## Organization Structure
 
@@ -66,7 +42,7 @@ packages/shared/src/types/
 
 ### 1. Component Props
 
-Component props interfaces are allowed in `.tsx` files but must follow this pattern:
+Component Props and imperative Handle interfaces are allowed in `.tsx` files and should follow this pattern:
 
 ```typescript
 // ✅ Allowed
@@ -81,31 +57,27 @@ interface MyComponentProps extends DialogProps {
 }
 ```
 
-### 2. Import from Shared Package
+### 2. Import Shared Contract Types
 
-Always import types from the shared package:
+Import existing domain and API contracts from `@mcp_router/shared` instead of redeclaring them. Types used only inside one implementation module may remain local and non-exported.
 
 ```typescript
-// ✅ Good
-import { MCPServer } from '@mcp_router/shared/types';
+// ✅ Shared contract
+import type { MCPServer } from "@mcp_router/shared";
 
-// ❌ Bad - local type definition
-interface MCPServer {
-  // ...
-}
+// ✅ Module-private implementation detail
+type SearchContext = { projectId: string | null };
 ```
 
-### 3. Extend Shared Types
+### 3. Extend Shared Types for Shared Contracts
 
-When you need custom types, extend from shared types:
+When defining a type that is exported across modules, extend or compose the existing shared type rather than duplicating it. Keep one-file implementation details local and non-exported.
 
 ```typescript
-// ✅ Good
-import { MCPServer } from '@mcp_router/shared/types';
+import type { MCPServer } from "@mcp_router/shared";
 
-interface ExtendedMCPServer extends MCPServer {
-  customField: string;
-}
+// Module-private implementation detail: keep it local and unexported.
+type ExtendedMCPServer = MCPServer & { customField: string };
 ```
 
 ### 4. Database Types
@@ -130,22 +102,22 @@ export function mapDBUserToUser(dbUser: DBUser): User {
 
 ## ESLint Enforcement
 
-The project uses a custom ESLint rule (`custom/no-scattered-types`) to enforce these guidelines. The rule will:
+The project uses `custom/no-scattered-types` to enforce these guidelines. The rule will:
 
-- ❌ Error on type definitions outside allowed locations
-- ✅ Allow component Props interfaces in `.tsx` files
-- ✅ Allow types in test files
-- ✅ Allow types in `.d.ts` files
+- Error on exported type definitions outside allowed shared locations
+- Allow module-private, non-exported implementation types
+- Allow component Props and imperative Handle interfaces in `.tsx` files
+- Allow types in test files and `.d.ts` files
 
 ## Migration Guide
 
 When migrating existing types:
 
-1. Identify the type category (domain, API, UI, etc.)
-2. Move the type to the appropriate location in `packages/shared/src/types/`
-3. Update all imports to use the shared package
-4. Remove the original type definition
-5. Run `pnpm lint` to verify compliance
+1. Decide whether the type is a shared contract or a module-private implementation detail.
+2. Put exported cross-module contracts in the appropriate shared type package; keep private types local and unexported.
+3. Update imports of shared contracts to use their owning package.
+4. Remove duplicate definitions while preserving module-specific behavior.
+5. Run `pnpm lint:fix` and `pnpm typecheck` to verify the change.
 
 Note: The ESLint rule will automatically catch any types defined outside of allowed locations, ensuring compliance.
 

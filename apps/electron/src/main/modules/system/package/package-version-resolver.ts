@@ -85,7 +85,7 @@ function isValidVersion(version: string): boolean {
   // Check if it's a valid semver or Python-style version
   // Semver: 1.2.3, 1.2.3-alpha.1, etc.
   // Python: 1.2.3, 1.2.3a1, 1.2.3.dev0, etc.
-  const semverPattern = /^\d+\.\d+\.\d+(?:-[\w\.]+)?(?:\+[\w\.]+)?$/;
+  const semverPattern = /^\d+\.\d+\.\d+(?:-[\w.]+)?(?:\+[\w.]+)?$/;
   const pythonPattern = /^\d+(?:\.\d+)*(?:[a-zA-Z]+\d*)?(?:\.dev\d+)?$/;
 
   return semverPattern.test(version) || pythonPattern.test(version);

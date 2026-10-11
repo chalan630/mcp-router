@@ -132,10 +132,17 @@ export abstract class RequestHandlerBase {
     additionalMetadata?: Record<string, any>,
   ): Promise<T> {
     // Create log entry
+    const logParams =
+      additionalMetadata &&
+      params &&
+      typeof params === "object" &&
+      !Array.isArray(params)
+        ? { ...params, ...additionalMetadata }
+        : params;
     const logEntry: RequestLogEntry = {
       timestamp: new Date().toISOString(),
       requestType,
-      params,
+      params: logParams,
       result: "success",
       duration: 0,
       clientId,

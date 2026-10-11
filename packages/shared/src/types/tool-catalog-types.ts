@@ -32,3 +32,14 @@ export interface SearchResult {
 export interface SearchResponse {
   results: SearchResult[];
 }
+
+export interface SearchProviderRequest {
+  query: string[];
+  context?: string;
+  tools: ToolInfo[];
+  maxResults?: number;
+}
+
+export interface SearchProvider {
+  search(request: SearchProviderRequest): Promise<SearchResult[]>;
+}

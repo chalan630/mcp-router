@@ -1,10 +1,5 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
-import type { PlatformAPI, Theme } from "@mcp_router/shared";
-
-export interface ThemeStoreState {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-}
+import type { PlatformAPI, Theme, ThemeStoreState } from "@mcp_router/shared";
 
 export const createThemeStore = (
   getPlatformAPI: () => PlatformAPI,

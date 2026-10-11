@@ -54,6 +54,7 @@ export default [
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/no-var-requires": "off",
       "@typescript-eslint/no-require-imports": "off",
+      "no-undef": "off",
 
       // 動的インポートを制限（特定のファイルは除外）
       "no-restricted-syntax": [
@@ -85,6 +86,8 @@ export default [
           allowedPaths: [
             "packages/shared/src/types",
             "packages/remote-api-types/src",
+            "apps/electron/src/lib/database/schema",
+            "apps/electron/src/lib/platform-api/types",
             "tools/eslint-rules",
             ".d.ts",
             "packages/ui/src",
@@ -100,6 +103,17 @@ export default [
 
       // 型の再エクスポートを制限
       "custom/no-type-reexport": "error",
+    },
+  },
+  {
+    files: [
+      "apps/electron/webpack*.ts",
+      "packages/remote-api-types/tsup.config.ts",
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: false,
+      },
     },
   },
   {

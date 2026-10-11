@@ -10,7 +10,7 @@
 export function parseResourceUri(
   uri: string,
 ): { serverName: string; path: string } | null {
-  const match = uri.match(/^resource:\/\/([^\/]+)\/(.+)$/);
+  const match = uri.match(/^resource:\/\/([^/]+)\/(.+)$/);
 
   if (!match) {
     return null;

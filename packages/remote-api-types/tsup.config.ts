@@ -1,24 +1,24 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: {
-    index: 'src/index.ts',
-    'schema/index': 'src/schema/index.ts'
+    index: "src/index.ts",
+    "schema/index": "src/schema/index.ts",
   },
-  format: ['cjs', 'esm'],
+  format: ["cjs", "esm"],
   dts: {
     resolve: false,
     // Ensure DTS build uses modern module resolution for packages like superjson
     compilerOptions: {
-      moduleResolution: 'bundler',
+      moduleResolution: "bundler",
     },
     entry: {
-      index: 'src/index.ts',
-      'schema/index': 'src/schema/index.ts'
-    }
+      index: "src/index.ts",
+      "schema/index": "src/schema/index.ts",
+    },
   },
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['@mcp_router/shared'],
+  external: ["@mcp_router/shared"],
 });

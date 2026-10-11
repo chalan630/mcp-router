@@ -2,17 +2,16 @@ module.exports = {
   meta: {
     type: "problem",
     docs: {
-      description:
-        "Enforce that type definitions are only allowed in specific directories",
+      description: "Enforce central locations for exported type definitions",
       category: "Best Practices",
       recommended: true,
     },
     fixable: null,
     messages: {
       typeNotAllowed:
-        "Type definitions ({{kind}}) are not allowed in this file. Move to packages/shared/src/types/ or other allowed locations.",
+        "Exported type definitions ({{kind}}) must be in a shared or otherwise allowed location.",
       interfaceNotAllowed:
-        "Interface definitions are not allowed in this file except for component props. Move to packages/shared/src/types/ or other allowed locations.",
+        "Exported interfaces must be in a shared or otherwise allowed location, except for component Props and Handle types.",
     },
     schema: [
       {
@@ -48,11 +47,17 @@ module.exports = {
     ];
     const allowComponentProps = options.allowComponentProps !== false;
     const allowedPatterns = options.allowedPatterns || [];
+    const isExported = (node) =>
+      ["ExportNamedDeclaration", "ExportDefaultDeclaration"].includes(
+        node.parent?.type,
+      );
 
-    const filename = context.getFilename();
+    const filename = context.getFilename().replace(/\\/g, "/");
 
     // Check if file is in allowed path
-    const isAllowedPath = allowedPaths.some((path) => filename.includes(path));
+    const isAllowedPath = allowedPaths.some((path) =>
+      filename.includes(path.replace(/\\/g, "/")),
+    );
 
     // Check if file matches allowed patterns
     const matchesAllowedPattern = allowedPatterns.some((pattern) => {
@@ -71,6 +76,10 @@ module.exports = {
 
     return {
       TSTypeAliasDeclaration(node) {
+        if (!isExported(node)) {
+          return;
+        }
+
         // Allow specific utility types
         const typeName = node.id.name;
         if (
@@ -89,13 +98,17 @@ module.exports = {
       },
 
       TSInterfaceDeclaration(node) {
+        if (!isExported(node)) {
+          return;
+        }
+
         const interfaceName = node.id.name;
 
         // Allow component props interfaces in .tsx files
         if (
           allowComponentProps &&
           filename.endsWith(".tsx") &&
-          interfaceName.endsWith("Props")
+          (interfaceName.endsWith("Props") || interfaceName.endsWith("Handle"))
         ) {
           return;
         }

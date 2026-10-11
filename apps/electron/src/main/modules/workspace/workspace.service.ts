@@ -9,11 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as fsSync from "fs";
 import type { Workspace, WorkspaceCreateConfig } from "@mcp_router/shared";
 
-export class WorkspaceService extends SingletonService<
-  Workspace,
-  string,
-  WorkspaceService
-> {
+export class WorkspaceService extends SingletonService {
   private electronSessions: Map<string, Electron.Session> = new Map();
   private databaseInstances: Map<string, SqliteManager> = new Map();
   private metaDb: SqliteManager | null = null;

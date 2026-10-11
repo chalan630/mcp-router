@@ -6,11 +6,7 @@ import { SettingsRepository } from "./settings.repository";
 /**
  * Service for managing application settings
  */
-export class SettingsService extends SingletonService<
-  AppSettings,
-  string,
-  SettingsService
-> {
+export class SettingsService extends SingletonService {
   /**
    * Constructor
    */

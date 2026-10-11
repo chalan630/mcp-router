@@ -7,13 +7,13 @@ import {
 import path from "path";
 import { getMainWindow } from "../utils/helpers";
 
-export type TestFixtures = {
+type TestFixtures = {
   electronApp: ElectronApplication;
   page: Page;
 };
 
 export const test = base.extend<TestFixtures>({
-  electronApp: async ({}, use) => {
+  electronApp: async (_fixtures, use) => {
     // Launch electron app from webpack build
     const appPath = path.join(__dirname, "../../.webpack/arm64/main/index.js");
 

@@ -104,8 +104,7 @@ export async function getUserShellEnv() {
     }
 
     return shellEnv;
-  } catch (error) {
-    // シェルの起動に失敗した場合は、Electron / Node.js の既存の環境変数を返す
+  } catch {
     return { ...process.env };
   }
 }
