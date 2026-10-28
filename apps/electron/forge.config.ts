@@ -27,6 +27,7 @@ const hasNotarizeCreds = !!(
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    executableName: "mcp-router",
     icon: "./public/images/icon/icon",
     // Support both Intel and Apple Silicon architectures - use target arch from env
     arch: (process.env.npm_config_target_arch as any) || process.arch,
@@ -67,6 +68,7 @@ const config: ForgeConfig = {
     new MakerDeb(
       {
         name: "mcp-router",
+        bin: "mcp-router",
         description:
           "Effortlessly manage your MCP servers with the MCP Router.",
       },
