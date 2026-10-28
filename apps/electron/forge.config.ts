@@ -9,6 +9,7 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
 import { MakerDMG } from "@electron-forge/maker-dmg";
+import { MakerDeb } from "@electron-forge/maker-deb";
 import * as path from "path";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -62,6 +63,12 @@ const config: ForgeConfig = {
         icon: "./public/images/icon/icon.icns",
       },
       ["darwin"],
+    ),
+    new MakerDeb(
+      {
+        name: "mcp-router",
+      },
+      ["linux"],
     ),
     new MakerZIP(),
   ],
