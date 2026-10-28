@@ -67,6 +67,8 @@ const config: ForgeConfig = {
     new MakerDeb(
       {
         name: "mcp-router",
+        description:
+          "Effortlessly manage your MCP servers with the MCP Router.",
       },
       ["linux"],
     ),
